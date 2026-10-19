@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="SecureStego — Image-Based Secret Message Hiding Using LSB Steganography and AES-256-GCM Authenticated Encryption. An MCA Cyber Security Academic Project.">
+    <title>{{ title or "SecureStego — Steganography & Encryption" }}</title>
+    
+    <!-- Google Fonts: Inter & Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <!-- Custom Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="bg-dark-navy text-light d-flex flex-column min-vh-100">
+
+    <!-- Top Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-navy-card border-bottom border-navy sticky-top shadow-sm">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2 fw-bold text-azure" href="{{ url_for('index') }}" id="brand-link">
+                <i class="bi bi-shield-lock-fill text-azure fs-4"></i>
+                <span class="brand-text">Secure<span class="text-white">Stego</span></span>
+            </a>
+            
+            <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 gap-1 gap-lg-2">
+                    <li class="nav-item">
+                        <a class="nav-link px-3 rounded-pill {{ 'active' if request.endpoint == 'index' else '' }}" href="{{ url_for('index') }}" id="nav-home">
+                            <i class="bi bi-house-door me-1"></i> Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-3 rounded-pill {{ 'active' if request.endpoint == 'hide' else '' }}" href="{{ url_for('hide') }}" id="nav-hide">
+                            <i class="bi bi-lock me-1"></i> Hide Message
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-3 rounded-pill {{ 'active' if request.endpoint == 'reveal' else '' }}" href="{{ url_for('reveal') }}" id="nav-reveal">
+                            <i class="bi bi-unlock me-1"></i> Reveal Message
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-3 rounded-pill {{ 'active' if request.endpoint == 'about' else '' }}" href="{{ url_for('about') }}" id="nav-about">
+                            <i class="bi bi-info-circle me-1"></i> About &amp; How It Works
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Flash Notifications -->
+    <div class="container mt-3">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category if category != 'error' else 'danger' }} alert-dismissible fade show border-0 shadow-sm d-flex align-items-center gap-2" role="alert">
+                        {% if category == 'success' %}
+                            <i class="bi bi-check-circle-fill fs-5 text-success"></i>
+                        {% elif category == 'danger' %}
+                            <i class="bi bi-exclamation-triangle-fill fs-5 text-danger"></i>
+                        {% elif category == 'warning' %}
+                            <i class="bi bi-exclamation-circle-fill fs-5 text-warning"></i>
+                        {% else %}
+                            <i class="bi bi-info-circle-fill fs-5 text-info"></i>
+                        {% endif %}
+                        <div class="flex-grow-1">{{ message }}</div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- Main Content Container -->
+    <main class="flex-grow-1 container py-4">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer mt-auto py-3 bg-navy-card border-top border-navy text-secondary">
+        <div class="container text-center text-md-between d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
+            <div class="small">
+                <span class="fw-semibold text-light">SecureStego</span> — MCA 3rd-Semester Cyber Security Project
+            </div>
+            <div class="d-flex gap-2 flex-wrap justify-content-center">
+                <span class="badge bg-navy-light text-azure border border-azure-subtle">AES-256-GCM</span>
+                <span class="badge bg-navy-light text-azure border border-azure-subtle">PBKDF2-HMAC-SHA256</span>
+                <span class="badge bg-navy-light text-azure border border-azure-subtle">LSB Steganography</span>
+                <span class="badge bg-navy-light text-azure border border-azure-subtle">Python Pillow</span>
+            </div>
+            <div class="small text-muted">
+                Developed by MCA Student Group of 3
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <!-- Custom Application JS -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

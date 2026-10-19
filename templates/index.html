@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center mb-5 pt-3">
+    <div class="col-lg-10 text-center">
+        <!-- Hero Header -->
+        <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill bg-navy-light border border-azure-subtle mb-3">
+            <i class="bi bi-shield-check text-azure"></i>
+            <span class="small fw-semibold text-azure">MCA 3rd-Semester Academic Project</span>
+        </div>
+        
+        <h1 class="display-5 fw-bold text-white mb-3 text-tracking-tight">
+            Secure<span class="text-azure">Stego</span>
+        </h1>
+        <p class="lead text-light-dim mx-auto mb-4" style="max-width: 720px;">
+            Image-Based Secret Message Hiding Using <strong>LSB Steganography</strong> and <strong>AES-256-GCM Authenticated Encryption</strong>.
+            Protecting confidentiality and concealing communication within ordinary PNG images.
+        </p>
+
+        <!-- Two Prominent Action Cards/Buttons -->
+        <div class="row g-4 justify-content-center mt-2 mb-5">
+            <div class="col-md-5">
+                <div class="card h-100 bg-navy-card border-navy hover-glow transition-all p-4 text-start">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="icon-box bg-azure-glow text-azure rounded-3 p-3">
+                            <i class="bi bi-file-earmark-lock fs-2"></i>
+                        </div>
+                        <div>
+                            <h3 class="h5 fw-bold text-white mb-1">Hide a Message</h3>
+                            <span class="badge bg-primary text-white">Encrypt &amp; Embed</span>
+                        </div>
+                    </div>
+                    <p class="text-secondary small mb-4">
+                        Encrypt confidential text using AES-256-GCM and hide it invisibly inside a PNG image using LSB pixel manipulation.
+                    </p>
+                    <a href="{{ url_for('hide') }}" id="btn-home-hide" class="btn btn-azure text-white w-100 py-2 fw-semibold d-flex align-items-center justify-content-center gap-2">
+                        <i class="bi bi-lock-fill"></i> Go to Hide Message
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-md-5">
+                <div class="card h-100 bg-navy-card border-navy hover-glow transition-all p-4 text-start">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="icon-box bg-emerald-glow text-emerald rounded-3 p-3">
+                            <i class="bi bi-file-earmark-check fs-2"></i>
+                        </div>
+                        <div>
+                            <h3 class="h5 fw-bold text-white mb-1">Reveal a Message</h3>
+                            <span class="badge bg-success text-white">Extract &amp; Decrypt</span>
+                        </div>
+                    </div>
+                    <p class="text-secondary small mb-4">
+                        Upload a carrier PNG image, authenticate with the secret password, and decrypt the hidden plaintext message.
+                    </p>
+                    <a href="{{ url_for('reveal') }}" id="btn-home-reveal" class="btn btn-outline-azure w-100 py-2 fw-semibold d-flex align-items-center justify-content-center gap-2">
+                        <i class="bi bi-unlock-fill"></i> Go to Reveal Message
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Simple Educational Section: Steganography vs Encryption -->
+<div class="row justify-content-center mb-4">
+    <div class="col-lg-10">
+        <div class="p-4 p-md-5 rounded-4 bg-navy-card border-navy shadow-sm">
+            <div class="text-center mb-4">
+                <h2 class="h4 fw-bold text-white mb-2">Defense-in-Depth: Two Primary Cybersecurity Concepts</h2>
+                <p class="text-secondary small mx-auto" style="max-width: 650px;">
+                    SecureStego pairs <strong>Steganography</strong> with <strong>Authenticated Encryption</strong> to achieve both secrecy of communication and confidentiality of content.
+                </p>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="p-3 rounded-3 bg-navy-surface border border-navy-subtle h-100">
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <i class="bi bi-eye-slash-fill text-azure fs-5"></i>
+                            <h3 class="h6 fw-bold text-azure mb-0">1. Steganography (Conceal Existence)</h3>
+                        </div>
+                        <p class="text-secondary small mb-0">
+                            Derived from the Greek words for <em>"covered writing"</em>, steganography hides the <strong>very existence</strong> of a secret message inside an innocent carrier file (a PNG image). An observer sees only a normal picture and has no reason to suspect covert transmission.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="p-3 rounded-3 bg-navy-surface border border-navy-subtle h-100">
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <i class="bi bi-key-fill text-emerald fs-5"></i>
+                            <h3 class="h6 fw-bold text-emerald mb-0">2. Encryption (Protect Confidentiality)</h3>
+                        </div>
+                        <p class="text-secondary small mb-0">
+                            Encryption scrambles the message into unreadable ciphertext using a mathematical key. With <strong>AES-256-GCM</strong>, even if an adversary suspects that data is hidden in the image, they cannot read the message or tamper with it without the secret password.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mini Workflow Banner -->
+            <div class="mt-4 pt-3 border-top border-navy-subtle text-center">
+                <span class="text-secondary small">
+                    <strong>Process Flow:</strong> Secret Text &rarr; AES-256-GCM &rarr; LSB Image Embedding &rarr; PNG Carrier &rarr; LSB Extraction &rarr; Decryption &rarr; Original Message
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
