@@ -238,3 +238,49 @@ h1, h2, h3, h4, h5, h6, .brand-text {
 ::-webkit-scrollbar-thumb:hover {
     background: #475569;
 }
+
+/* --- Crypto Lab Pills & Buttons --- */
+.btn-outline-emerald {
+    border-color: var(--emerald-accent);
+    color: var(--emerald-accent);
+    transition: all 0.2s ease;
+}
+
+.btn-outline-emerald:hover, .btn-outline-emerald:focus {
+    background-color: var(--emerald-accent);
+    border-color: var(--emerald-accent);
+    color: #070b19;
+    box-shadow: 0 0 15px rgba(16, 185, 129, 0.35);
+}
+
+#cryptoLabTabs .nav-link {
+    color: var(--text-secondary);
+    background-color: transparent;
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+}
+
+#cryptoLabTabs .nav-link:hover {
+    color: var(--azure-accent);
+    background-color: rgba(56, 189, 248, 0.08);
+    border-color: rgba(56, 189, 248, 0.2);
+}
+
+#cryptoLabTabs .nav-link.active {
+    color: #ffffff !important;
+    background-color: rgba(56, 189, 248, 0.2) !important;
+    border-color: var(--azure-accent) !important;
+    box-shadow: 0 0 12px rgba(56, 189, 248, 0.25);
+}
+
+/* Custom form range accent */
+.form-range::-webkit-slider-thumb {
+    background-color: var(--azure-accent);
+    box-shadow: 0 0 8px rgba(56, 189, 248, 0.5);
+}
+
+.form-range::-moz-range-thumb {
+    background-color: var(--azure-accent);
+    box-shadow: 0 0 8px rgba(56, 189, 248, 0.5);
+}
+

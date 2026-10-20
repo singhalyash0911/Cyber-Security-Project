@@ -38,6 +38,17 @@ from steganography import (
     SteganographyError,
     CapacityError
 )
+from crypto_lab import (
+    aes_demo_encrypt,
+    aes_demo_decrypt,
+    caesar_demo,
+    generate_demo_rsa_keypair,
+    rsa_demo_encrypt,
+    rsa_demo_decrypt,
+    calculate_sha256,
+    compare_sha256_avalanche,
+    CryptoLabError
+)
 
 app = Flask(__name__)
 
@@ -201,6 +212,181 @@ def reveal():
             return render_template("reveal.html", title="Reveal Message — SecureStego", revealed_message=None)
 
     return render_template("reveal.html", title="Reveal Message — SecureStego", revealed_message=None)
+
+
+@app.route("/crypto-lab")
+def crypto_lab():
+    """
+    Page 5: Crypto Lab — Educational cryptography demonstrations for MCA syllabus.
+    Includes AES-256-GCM, Caesar substitution cipher, RSA-2048 with OAEP-SHA256,
+    SHA-256 one-way hashing & avalanche effect, and concise theory topics.
+    """
+    try:
+        initial_rsa_keys = generate_demo_rsa_keypair(2048)
+    except Exception:
+        initial_rsa_keys = None
+
+    active_tab = request.args.get("tab", "aes")
+    return render_template(
+        "crypto_lab.html",
+        title="Crypto Lab — SecureStego",
+        initial_rsa_keys=initial_rsa_keys,
+        active_tab=active_tab
+    )
+
+
+# --- Crypto Lab Educational API Endpoints ---
+
+@app.route("/crypto-lab/api/aes/encrypt", methods=["POST"])
+def api_crypto_aes_encrypt():
+    """API endpoint to demonstrate AES-256-GCM encryption with internal breakdown."""
+    data = request.get_json(silent=True) or {}
+    plaintext = data.get("plaintext", "").strip()
+    password = data.get("password", "")
+
+    if not plaintext:
+        return jsonify({"success": False, "error": "Plaintext message cannot be empty."}), 400
+    if not password:
+        return jsonify({"success": False, "error": "Password cannot be empty."}), 400
+
+    try:
+        result = aes_demo_encrypt(plaintext, password)
+        return jsonify({"success": True, "data": result})
+    except (CryptoLabError, EncryptionError) as e:
+        return jsonify({"success": False, "error": str(e)}), 400
+    except Exception as e:
+        return jsonify({"success": False, "error": "Encryption failed: " + str(e)}), 500
+
+
+@app.route("/crypto-lab/api/aes/decrypt", methods=["POST"])
+def api_crypto_aes_decrypt():
+    """API endpoint to demonstrate AES-256-GCM authenticated decryption."""
+    data = request.get_json(silent=True) or {}
+    package = data.get("package", "").strip()
+    password = data.get("password", "")
+
+    if not package:
+        return jsonify({"success": False, "error": "Encrypted package string cannot be empty."}), 400
+    if not password:
+        return jsonify({"success": False, "error": "Please provide the decryption password."}), 400
+
+    try:
+        result = aes_demo_decrypt(package, password)
+        return jsonify({"success": True, "data": result})
+    except (CryptoLabError, DecryptionError) as e:
+        return jsonify({"success": False, "error": str(e)}), 400
+    except Exception as e:
+        return jsonify({"success": False, "error": "Decryption failed: " + str(e)}), 400
+
+
+@app.route("/crypto-lab/api/caesar", methods=["POST"])
+def api_crypto_caesar():
+    """API endpoint to demonstrate Caesar substitution cipher encryption/decryption."""
+    data = request.get_json(silent=True) or {}
+    text = data.get("text", "")
+    shift = data.get("shift", 3)
+    mode = data.get("mode", "encrypt")
+
+    if not text:
+        return jsonify({"success": False, "error": "Input text cannot be empty."}), 400
+
+    try:
+        shift_int = int(shift)
+    except (ValueError, TypeError):
+        return jsonify({"success": False, "error": "Shift must be a valid integer."}), 400
+
+    try:
+        result = caesar_demo(text, shift_int, mode=mode)
+        return jsonify({"success": True, "data": result})
+    except CryptoLabError as e:
+        return jsonify({"success": False, "error": str(e)}), 400
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
+@app.route("/crypto-lab/api/rsa/generate-keys", methods=["POST"])
+def api_crypto_rsa_generate():
+    """API endpoint to generate a fresh 2048-bit demonstration RSA key pair."""
+    try:
+        keys = generate_demo_rsa_keypair(2048)
+        return jsonify({"success": True, "data": keys})
+    except Exception as e:
+        return jsonify({"success": False, "error": f"Failed to generate RSA keys: {str(e)}"}), 500
+
+
+@app.route("/crypto-lab/api/rsa/encrypt", methods=["POST"])
+def api_crypto_rsa_encrypt():
+    """API endpoint to encrypt a short message using RSA public key with OAEP-SHA256."""
+    data = request.get_json(silent=True) or {}
+    public_key = data.get("public_key", "").strip()
+    plaintext = data.get("plaintext", "").strip()
+
+    if not public_key:
+        return jsonify({"success": False, "error": "Public key (PEM format) is required."}), 400
+    if not plaintext:
+        return jsonify({"success": False, "error": "Plaintext message cannot be empty."}), 400
+
+    try:
+        result = rsa_demo_encrypt(public_key, plaintext)
+        return jsonify({"success": True, "data": result})
+    except CryptoLabError as e:
+        return jsonify({"success": False, "error": str(e)}), 400
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
+@app.route("/crypto-lab/api/rsa/decrypt", methods=["POST"])
+def api_crypto_rsa_decrypt():
+    """API endpoint to decrypt ciphertext using RSA private key with OAEP-SHA256."""
+    data = request.get_json(silent=True) or {}
+    private_key = data.get("private_key", "").strip()
+    ciphertext = data.get("ciphertext", "").strip()
+
+    if not private_key:
+        return jsonify({"success": False, "error": "Private key (PEM format) is required."}), 400
+    if not ciphertext:
+        return jsonify({"success": False, "error": "Ciphertext cannot be empty."}), 400
+
+    try:
+        result = rsa_demo_decrypt(private_key, ciphertext)
+        return jsonify({"success": True, "data": result})
+    except CryptoLabError as e:
+        return jsonify({"success": False, "error": str(e)}), 400
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
+@app.route("/crypto-lab/api/sha256", methods=["POST"])
+def api_crypto_sha256():
+    """API endpoint to calculate SHA-256 hash digest."""
+    data = request.get_json(silent=True) or {}
+    text = data.get("text", "")
+
+    if not text:
+        return jsonify({"success": False, "error": "Input text cannot be empty."}), 400
+
+    try:
+        result = calculate_sha256(text)
+        return jsonify({"success": True, "data": result})
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
+@app.route("/crypto-lab/api/sha256/avalanche", methods=["POST"])
+def api_crypto_sha256_avalanche():
+    """API endpoint to demonstrate SHA-256 avalanche effect by comparing two inputs."""
+    data = request.get_json(silent=True) or {}
+    text1 = data.get("text1", "")
+    text2 = data.get("text2", "")
+
+    if text1 is None or text2 is None:
+        return jsonify({"success": False, "error": "Both input texts are required."}), 400
+
+    try:
+        result = compare_sha256_avalanche(str(text1), str(text2))
+        return jsonify({"success": True, "data": result})
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
 
 
 @app.route("/about")

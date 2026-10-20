@@ -82,6 +82,7 @@
 Cyber Security Project/
 ├── app.py                     # Main Flask web application and routing
 ├── encryption.py              # AES-256-GCM and PBKDF2 key derivation module
+├── crypto_lab.py              # Educational Crypto Lab module (AES, Caesar, RSA, SHA-256)
 ├── steganography.py           # Pillow-based LSB embedding & extraction module
 ├── requirements.txt           # Python dependencies
 ├── sample_carrier.png         # Ready-to-use sample PNG image for testing
@@ -90,17 +91,19 @@ Cyber Security Project/
 │   ├── css/
 │   │   └── style.css          # Dark navy & blue cybersecurity theme
 │   └── js/
-│       └── main.js            # Image previews, live capacity gauge, copy button
+│       └── main.js            # Image previews, live capacity gauge, Crypto Lab client
 ├── templates/
 │   ├── base.html              # Base layout with navbar, alerts, and footer
 │   ├── index.html             # Page 1: Home landing page
 │   ├── hide.html              # Page 2: Hide message form & download card
 │   ├── reveal.html            # Page 3: Reveal message form & result display
+│   ├── crypto_lab.html        # Page 5: Educational Crypto Lab (MCA Syllabus)
 │   └── about.html             # Page 4: Technical architecture & viva guide
 └── tests/
     ├── __init__.py
     ├── test_encryption.py     # 10 encryption & key derivation tests
     ├── test_steganography.py  # 8 LSB steganography & capacity tests
+    ├── test_crypto_lab.py     # 20 Crypto Lab unit, algorithm & API tests
     └── test_app.py            # 12 Flask routes, validation, and HTTP workflow tests
 ```
 
@@ -133,11 +136,11 @@ pip install -r requirements.txt
 ```
 
 ### Step 4: Run the Automated Test Suite
-Ensure all cryptographic and steganographic modules are passing:
+Ensure all cryptographic, steganographic, and Crypto Lab modules are passing:
 ```bash
 pytest tests/
 ```
-*(All 30 unit and integration tests should pass in under 1 second).*
+*(All 50 unit, integration, and API tests should pass in under 4 seconds).*
 
 ### Step 5: Start the Flask Application
 ```bash
@@ -153,6 +156,8 @@ http://127.0.0.1:5000
 ---
 
 ## 7. How to Test the Application
+
+### A. Core Steganography Workflow (Primary Focus)
 
 1. **Hide a Secret Message (`/hide`):**
    - Click **"Hide a Message"** from the home page.
@@ -175,6 +180,46 @@ http://127.0.0.1:5000
    - On the **Reveal** page, upload the same stego image but enter a wrong password (e.g. `WrongPass!`).
    - Click **"Reveal Message"**.
    - Notice the clean, secure error message: *"Authentication failed: Incorrect password or corrupted payload."*
+
+---
+
+### B. Educational Crypto Lab Demonstrations (`/crypto-lab`)
+
+Click the **Crypto Lab** navigation tab to explore interactive demonstrations for the MCA Cyber Security and Cryptography syllabus:
+
+1. **AES-256-GCM (Symmetric Encryption):**
+   - Reuses the project's core [`encryption.py`](file:///d:/Cyber%20Security%20Project/encryption.py) module.
+   - Enter plaintext and password, then click **"Encrypt with AES-256-GCM"**.
+   - Inspect the granular breakdown: 16-byte random salt, PBKDF2 derived 256-bit key, 12-byte nonce, ciphertext, and 16-byte authentication tag.
+   - Test authenticated decryption, and click **"Tamper"** to flip a bit and witness the GCM authentication tag actively detect corruption and reject decryption!
+
+2. **Caesar Cipher (Classical Substitution):**
+   - Enter text and slide the shift value $k$ from 1 to 25.
+   - See the real-time alphabet substitution mapping ($A \to D, B \to E, \dots$).
+   - Switch between Encrypt and Decrypt modes, or click **"Set ROT13"**.
+   - Includes a clear educational disclaimer explaining why Caesar ciphers are strictly academic and insecure (only 25 keys, vulnerable to frequency analysis).
+
+3. **RSA Public & Private Key Encryption (Asymmetric):**
+   - Uses the Python `cryptography` library with modern **OAEP (SHA-256)** padding.
+   - Generates a fresh temporary 2048-bit demonstration key pair.
+   - Displays the public key (role: encryption) and private key (role: decryption).
+   - Enter a short message (max 190 bytes for RSA-2048 with OAEP-SHA256) and encrypt with the public key.
+   - Decrypt with the private key to recover the message.
+   - Explains why RSA is used for key exchange or hybrid encryption rather than bulk steganography payloads.
+
+4. **SHA-256 One-Way Hash Function & Avalanche Effect:**
+   - Calculate fixed 256-bit (64 hex characters) cryptographic hash digests.
+   - Demonstrates the **Avalanche Effect** with side-by-side inputs (e.g., `CyberSecurity2026` vs `CyberSecurity2027`), displaying the Hamming bit difference and verifying that ~50% of bits flip when a single character changes.
+   - Highlights the fundamental rule: hashing is strictly one-way and is not encryption or safe plain password protection.
+
+5. **MCA Syllabus Theory Reference:**
+   - Concise academic review cards covering:
+     - **Transposition Ciphers** (Rail Fence, Columnar Transposition vs Substitution)
+     - **Block vs. Stream Ciphers** (Block sizes, modes: ECB, CBC, GCM vs keystream ciphers like ChaCha20)
+     - **DES Limitations** (56-bit keys, brute-force feasibility, 3DES, transition to AES)
+     - **Key Management** (Generation, Distribution, Storage, Rotation, Destruction, Kerckhoffs's Principle)
+     - **Diffie–Hellman Key Exchange** (Discrete log problem, establishing shared secrets over untrusted channels)
+     - **Digital Signatures** (Hash + private key signing, public key verification, non-repudiation)
 
 ---
 

@@ -51,6 +51,11 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link px-3 rounded-pill {{ 'active' if request.endpoint == 'crypto_lab' else '' }}" href="{{ url_for('crypto_lab') }}" id="nav-crypto-lab">
+                            <i class="bi bi-cpu me-1"></i> Crypto Lab
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link px-3 rounded-pill {{ 'active' if request.endpoint == 'about' else '' }}" href="{{ url_for('about') }}" id="nav-about">
                             <i class="bi bi-info-circle me-1"></i> About &amp; How It Works
                         </a>

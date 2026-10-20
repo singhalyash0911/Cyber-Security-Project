@@ -78,6 +78,18 @@ class TestWebRoutes:
         assert "Student 2" in html
         assert "Student 3" in html
 
+    def test_crypto_lab_page_get(self, client):
+        """Test GET /crypto-lab renders the syllabus lab demonstrations."""
+        response = client.get("/crypto-lab")
+        assert response.status_code == 200
+        html = response.data.decode("utf-8")
+        assert "Crypto Lab" in html
+        assert "AES-256-GCM" in html
+        assert "Caesar Cipher" in html
+        assert "RSA" in html
+        assert "SHA-256" in html
+        assert "MCA Theory Topics" in html
+
 
 class TestHideWorkflow:
     """Tests for POST /hide validation and stego image generation."""
